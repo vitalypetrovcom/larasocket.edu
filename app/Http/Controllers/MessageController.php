@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessage;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,8 @@ class MessageController extends Controller { // Контроллер для ра
         $message = Message::create([
             "body" => $request->body
         ]);
+
+        event (new NewMessage($message->body, $message->created_at)); // Создаем событие для рассылки новых сообщений всем, кто подключен к вебсокетам
 
         return response ()->json ([
             "status" => true,
